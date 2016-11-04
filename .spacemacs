@@ -148,7 +148,7 @@ values."
    dotspacemacs-display-default-layout nil
    ;; If non nil then the last auto saved layouts are resume automatically upon
    ;; start. (default nil)
-   dotspacemacs-auto-resume-layouts t
+   dotspacemacs-auto-resume-layouts nil
    ;; Location where to auto-save files. Possible values are `original' to
    ;; auto-save the file in-place, `cache' to auto-save the file to another
    ;; file stored in the cache directory and `nil' to disable auto-saving.
@@ -185,7 +185,7 @@ values."
    dotspacemacs-loading-progress-bar t
    ;; If non nil the frame is fullscreen when Emacs starts up. (default nil)
    ;; (Emacs 24.4+ only)
-   dotspacemacs-fullscreen-at-startup nil
+   dotspacemacs-fullscreen-at-startup t
    ;; If non nil `spacemacs/toggle-fullscreen' will not use native fullscreen.
    ;; Use to disable fullscreen animations in OSX. (default nil)
    dotspacemacs-fullscreen-use-non-native nil
@@ -255,7 +255,9 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 	(define-key global-map (kbd "C-+") 'text-scale-increase)
 	(define-key global-map (kbd "C--") 'text-scale-decrease)
-  	(add-hook 'after-init-hook #'neotree-show)
+	(spacemacs/declare-prefix "o" "neotree-actions")
+	(spacemacs/set-leader-keys "oo" 'neotree-projectile-action)
+	(spacemacs/set-leader-keys "oh" 'neotree-hide)	  	
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
