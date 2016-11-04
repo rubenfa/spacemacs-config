@@ -258,6 +258,7 @@ you should place your code here."
 	(spacemacs/declare-prefix "o" "neotree-actions")
 	(spacemacs/set-leader-keys "oo" 'neotree-projectile-action)
 	(spacemacs/set-leader-keys "oh" 'neotree-hide)	  	
+	(add-hook 'projectile-find-file-hook #'neotree-projectile-action)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
