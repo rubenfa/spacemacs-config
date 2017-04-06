@@ -262,7 +262,12 @@ you should place your code here."
 	(spacemacs/set-leader-keys "oo" 'neotree-projectile-action)
 	(spacemacs/set-leader-keys "oh" 'neotree-hide)	  	
 	(add-hook 'projectile-find-file-hook #'neotree-projectile-action)  
-  (setq neo-theme 'icons)
+  	(setq neo-theme 'icons)
+	(add-to-list 'display-buffer-alist
+                    `(,(rx bos "*Alchemist" (* not-newline) "*" eos)
+                         (display-buffer-in-side-window)
+                         (inhibit-same-window . t)
+                         (window-height . 0.25)))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
