@@ -37,10 +37,10 @@ values."
      ;;        shell-default-position 'bottom)
      ;;spell-checking
      syntax-checking
-     ;; version-control
+     version-control
      elixir
-	themes-megapack  
-     window-purpose
+     themes-megapack
+     spacemacs-layouts
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -152,7 +152,7 @@ values."
    dotspacemacs-display-default-layout nil
    ;; If non nil then the last auto saved layouts are resume automatically upon
    ;; start. (default nil)
-   dotspacemacs-auto-resume-layouts nil
+   dotspacemacs-auto-resume-layouts "original"
    ;; Location where to auto-save files. Possible values are `original' to
    ;; auto-save the file in-place, `cache' to auto-save the file to another
    ;; file stored in the cache directory and `nil' to disable auto-saving.
@@ -269,6 +269,8 @@ you should place your code here."
                          (display-buffer-in-side-window)
                          (inhibit-same-window . t)
                          (window-height . 0.25)))
+  (setq alchemist-goto-elixir-source-dir "/home/ruben/Desarrollo/libraries/elixir/elixir-master")
+
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
