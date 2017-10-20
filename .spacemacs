@@ -89,14 +89,14 @@ values."
    ;; directory. A string value must be a path to an image format supported
    ;; by your Emacs build.
    ;; If the value is nil then no banner is displayed. (default 'official)
-   dotspacemacs-startup-banner 'official
+   dotspacemacs-startup-banner nil
    ;; List of items to show in the startup buffer. If nil it is disabled.
    ;; Possible values are: `recents' `bookmarks' `projects'.
    ;; (default '(recents projects))
-   dotspacemacs-startup-lists '(recents projects)
+   dotspacemacs-startup-lists '(recents projects bookmarks)
    ;; Number of recent files to show in the startup buffer. Ignored if
    ;; `dotspacemacs-startup-lists' doesn't include `recents'. (default 5)
-   dotspacemacs-startup-recent-list-size 5
+   dotspacemacs-startup-recent-list-size 10
    ;; Default major mode of the scratch buffer (default `text-mode')
    dotspacemacs-scratch-mode 'text-mode
    ;; List of themes, the first of the list is loaded when spacemacs starts.
@@ -258,6 +258,7 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+  (spacemacs/toggle-indent-guide-globally-on)
 	(define-key global-map (kbd "C-+") 'text-scale-increase)
 	(define-key global-map (kbd "C--") 'text-scale-decrease)
 	(spacemacs/declare-prefix "o" "neotree-actions")
@@ -281,9 +282,9 @@ you should place your code here."
     (setq evil-shift-width 4)
     (local-set-key (kbd "C-c C-c") 'recompile))
 
-  (add-hook 'csharp-mode-hook 'my-csharp-mode-setup t)
+  (add-hook 'csharp-mode-hook 'my-csharp-mode-setup t)) 
+  
 
-  )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
