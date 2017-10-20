@@ -41,6 +41,7 @@ values."
      elixir
      themes-megapack
      spacemacs-layouts
+     csharp
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -115,7 +116,7 @@ values."
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
    dotspacemacs-default-font '("Hack"
-                               :size 14
+                               :size 15
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -270,6 +271,17 @@ you should place your code here."
                          (inhibit-same-window . t)
                          (window-height . 0.25)))
   (setq alchemist-goto-elixir-source-dir "/home/ruben/Desarrollo/libraries/elixir/elixir-master")
+  (defun my-csharp-mode-setup ()
+    (setq indent-tabs-mode nil)
+    (setq c-syntactic-indentation t)
+    (c-set-style "ellemtel")
+    (setq c-basic-offset 4)
+    (setq truncate-lines t)
+    (setq tab-width 4)
+    (setq evil-shift-width 4)
+    (local-set-key (kbd "C-c C-c") 'recompile))
+
+  (add-hook 'csharp-mode-hook 'my-csharp-mode-setup t)
 
   )
 
