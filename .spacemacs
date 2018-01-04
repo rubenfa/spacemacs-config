@@ -18,6 +18,7 @@ values."
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
    '(
+     yaml
      javascript
      html
      react
@@ -35,19 +36,20 @@ values."
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
-     ;;spell-checking
+     spell-checking
      syntax-checking
      version-control
      elixir
      themes-megapack
      spacemacs-layouts
      csharp
+     (colors :variables colors-colorize-identifiers 'all)
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(all-the-icons)
+   dotspacemacs-additional-packages '(all-the-icons)                                         
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -153,7 +155,7 @@ values."
    dotspacemacs-display-default-layout nil
    ;; If non nil then the last auto saved layouts are resume automatically upon
    ;; start. (default nil)
-   dotspacemacs-auto-resume-layouts "original"
+   dotspacemacs-auto-resume-layouts nil
    ;; Location where to auto-save files. Possible values are `original' to
    ;; auto-save the file in-place, `cache' to auto-save the file to another
    ;; file stored in the cache directory and `nil' to disable auto-saving.
@@ -272,17 +274,27 @@ you should place your code here."
                          (inhibit-same-window . t)
                          (window-height . 0.25)))
   (setq alchemist-goto-elixir-source-dir "/home/ruben/Desarrollo/libraries/elixir/elixir-master")
-  (defun my-csharp-mode-setup ()
-    (setq indent-tabs-mode nil)
-    (setq c-syntactic-indentation t)
-    (c-set-style "ellemtel")
-    (setq c-basic-offset 4)
-    (setq truncate-lines t)
-    (setq tab-width 4)
-    (setq evil-shift-width 4)
-    (local-set-key (kbd "C-c C-c") 'recompile))
 
-  (add-hook 'csharp-mode-hook 'my-csharp-mode-setup t)) 
+  (add-hook 'markdown-mode-hook 'flyspell-mode) ;start flyspell-mode
+  (setq ispell-dictionary "spanish")    ;set the default dictionary
+  (add-hook 'markdown-mode-hook 'ispell)   ;start ispell
+  (add-hook 'markdown-mode-hook (lambda () (setq-default word-wrap t)))
+
+
+
+
+  ;; (defun my-csharp-mode-setup ()
+  ;;   (setq indent-tabs-mode nil)
+  ;;   (setq c-syntactic-indentation t)
+  ;;   (c-set-style "ellemtel")
+  ;;   (setq c-basic-offset 4)
+  ;;   (setq truncate-lines t)
+  ;;   (setq tab-width 4)
+  ;;   (setq evil-shift-width 4)
+  ;;   (local-set-key (kbd "C-c C-c") 'recompile))
+
+  ;; (add-hook 'csharp-mode-hook 'my-csharp-mode-setup t)
+  ) 
   
 
 
@@ -303,4 +315,5 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+
 
