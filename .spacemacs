@@ -40,7 +40,7 @@ values."
      syntax-checking
      version-control
      elixir
-     themes-megapack
+     ;;themes-megapack
      spacemacs-layouts
      csharp
      )
