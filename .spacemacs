@@ -269,7 +269,10 @@ you should place your code here."
   	(setq neo-theme 'icons)
 	(add-to-list 'display-buffer-alist
                     `(,(rx bos "*Alchemist" (* not-newline) "*" eos)
-                         (display-buffer-in-side-window)
+                      (display-buffer-reuse-window
+                       display-buffer-use-some-frame
+                       display-buffer-pop-up-frame)
+                      (reuse-window . t)
                          (inhibit-same-window . t)
                          (window-height . 0.25)))
   (setq alchemist-goto-elixir-source-dir "/home/ruben/Desarrollo/libraries/elixir/elixir-master")
@@ -279,7 +282,7 @@ you should place your code here."
   (add-hook 'markdown-mode-hook 'ispell)   ;start ispell
   (add-hook 'markdown-mode-hook (lambda () (setq-default word-wrap t)))
 
-
+  (golden-ratio-mode 1)
 
 
   ;; (defun my-csharp-mode-setup ()
