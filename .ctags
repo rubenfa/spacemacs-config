@@ -1,3 +1,4 @@
+--exclude=node_modules/*
 --recurse=yes
 --tag-relative=yes
 --exclude=\*.bak
@@ -29,104 +30,61 @@
 --exclude=\*.tar.\*
 --exclude=tmp
 --exclude=vendor
+--exclude=.hg
+--exclude=log
+--exclude=tmp
+--exclude=.idea
 
---langdef=less
---langmap=less:.less
---regex-less=/^\.([a-zA-Z0-9_\-]+)[ ]*\(.*\)[ ]*\{/\1/m,macro/i
---regex-less=/^\@([a-zA-Z0-9_\-]+)\:.*\;/\1/v,var/i
---regex-less=/^[ \t]*.([A-Za-z0-9_-]+)/\1/c,class,classes/
---regex-less=/^[ \t&]*\.([A-Za-z0-9_-]+)/\1/c,class,classes/
---regex-less=/^[ \t&]*\.([A-Za-z0-9_-]+)/\1/c,class,classes/
---regex-less=/^[ \t&]*#([A-Za-z0-9_-]+)/\1/idds/
---regex-less=/^[ \t]*#([A-Za-z0-9_-]+)/\1/i,id,ids/
---regex-less=/^[ \t&]*#([A-Za-z0-9_-]+)/\1/i,id,ids/
---regex-less=/^[ \t]*(@[A-Za-z0-9_-]+):/\1/v,variable,variables/
---regex-less=/^[ \t]*(@[A-Za-z0-9_-]+):/\1/v,variable,variables/
---regex-less=/^[ \t]*(([A-Za-z0-9_-]+[ \t\n,]+)+)\{/\1/t,tag,tags/
---regex-less=/^[ \t]*(([A-Za-z0-9_-]+[ \t\n,]+)+)\{/\1/t,tag,tags/
---regex-less=/^[ \t]*@media\s+([A-Za-z0-9_-]+)/\1/m,media,medias/
---regex-less=/^[ \t]*@media\s+([A-Za-z0-9_-]+)/\1/m,media,medias/
---regex-less=/^[ \t]*@medias+([A-Za-z0-9_-]+)/\1/m,media,medias/
 
---langmap=html:.htm.html.erb
---regex-html=/class="([A-Za-z0-9_-]+)"/\1/c,class,classes/
---regex-html=/id="([A-Za-z0-9_-]+)"/\1/i,id,ids/
---regex-html=/[ \t]+id[ \t]*=[ \t]*['"]([^'"]+)/\1/o,object/
---regex-html=/[ \t]+ng-blur[ \t]*=[ \t]*['"]([^'"]+)/\1/o,object/
---regex-html=/[ \t]+ng-change[ \t]*=[ \t]*['"]([^'"]+)/\1/o,object/
---regex-html=/[ \t]+ng-click[ \t]*=[ \t]*['"]([^'"]+)/\1/o,object/
---regex-html=/[ \t]+ng-controller[ \t]*=[ \t]*['"]([^'"]+)/\1/o,object/
---regex-html=/[ \t]+ng-disabled[ \t]*=[ \t]*['"]([^'"]+)/\1/o,object/
---regex-html=/[ \t]+ng-focus[ \t]*=[ \t]*['"]([^'"]+)/\1/o,object/
---regex-html=/[ \t]+ng-if[ \t]*=[ \t]*['"]([^'"]+)/\1/o,object/
---regex-html=/[ \t]+ng-repeat[ \t]*=[ \t]*['"][^'"]+ in \([^'"]+\)['"]/\1/o,object/
---regex-html=/[ \t]+ng-show[ \t]*=[ \t]*['"]([^'"]+)/\1/o,object/
+--langdef=css
+--langmap=css:.css
+--regex-css=/^[ \t]*\.([A-Za-z_][A-Za-z0-9_:"' \t\-]*)[ \t]*\{/.\1/c,class/
+--regex-css=/^[ \t]*\.([A-Za-z_][A-Za-z0-9_:"' \t\-]*)[ \t]*,/.\1/c,class/
+--regex-css=/,[ \t]*\.([A-Za-z_][A-Za-z0-9_:"' \t\-]*)[ \t]*\{/.\1/c,class/
+--regex-css=/,[ \t]*\.([A-Za-z_][A-Za-z0-9_:"' \t\-]*)[ \t]*,/.\1/c,class/
+--regex-css=/^[ \t]*#([A-Za-z_][A-Za-z0-9_:()="' \t\-]*)[ \t]*\{/#\1/o,object/
+--regex-css=/^[ \t]*#([A-Za-z_][A-Za-z0-9_:()="' \t\-]*)[ \t]*,/#\1/o,object/
+--regex-css=/,[ \t]*#([A-Za-z_][A-Za-z0-9_:()="' \t\-]*)[ \t]*\{/#\1/o,object/
+--regex-css=/,[ \t]*#([A-Za-z_][A-Za-z0-9_:()="' \t\-]*)[ \t]*,/#\1/o,object/
+--regex-css=/^[ \t]*([A-Za-z_][A-Za-z0-9_:()="' \t\-]*)[ \t]*\{/\1/t,tags/
+--regex-css=/^[ \t]*([A-Za-z_][A-Za-z0-9_:()="' \t\-]*)[ \t]*,/\1/t,tags/
+--regex-css=/,[ \t]*([A-Za-z_][A-Za-z0-9_:()="' \t\-]*)[ \t]*\{/\1/t,tags/
+--regex-css=/,[ \t]*([A-Za-z_][A-Za-z0-9_:()="' \t\-]*)[ \t]*,/\1/t,tags/
+--regex-css=/^[ \t]*\*[ \t]*[,{]/*/t,tags/
 
---langdef=scss
---langmap=scss:.scss
---regex-scss=/^(.*)*\#([A-Za-z0-9_-]+) *[,{]/\2/i,id,ids/
---regex-scss=/(^(.*, *)([A-Za-z0-9_-]+)) *[,|\{]/\3/t,tag,tags/
---regex-scss=/(^([A-Za-z0-9_-])*([A-Za-z0-9_-]+)) *[,|\{]/\1/t,tag,tags/
---regex-scss=/^([A-Za-z0-9_-]*)*(\.[A-Za-z0-9_-]+) *[,{]/\2/c,class,classes/
---regex-scss=/^[ \t]+(\.[A-Za-z0-9_-]+) *[,{]/\1/c,class,classes/
---regex-scss=/^[ \t]*#([A-Za-z0-9_-]+)/\1/i,id,ids/
---regex-scss=/(^[ \t]+([A-Za-z0-9_-]+)) *[,|\{]/\1/t,tag,tags/
---regex-scss=/^[ \t]*\$([A-Za-z0-9_-]+)/\1/v,variable,variables/
---regex-scss=/(^([^\/\/])*)[ \t]+([A-Za-z0-9_-]+)) *[,|\{]/\3/t,tag,tags/
---regex-scss=/^[ \t]*@media\s+([A-Za-z0-9_-]+)/\1/d,media,media/
---regex-scss=/^[ \t]*@mixin ([A-Za-z0-9_-]+)/\1/m,mixin,mixins/
+--langdef=json
+--langmap=json:.json
+--regex-json=/^[ ]{2}"([^"]+)"[ \t]*:[ \t]*/\1/o,object/
+--regex-json=/^[\t]"([^"]+)"[ \t]*:[ \t]*/\1/o,object/
 
 --langdef=markdown
---langmap=markdown:.md
---regex-markdown=/^#\+[ \t](.*$)/\1/h,heading,headings/
---regex-markdown=/^#[ \t]+(.*)/\1/h,Heading_L1/
---regex-markdown=/^##[ \t]+(.*)/\1/i,Heading_L2/
---regex-markdown=/^###[ \t]+(.*)/\1/k,Heading_L3/
+--langmap=markdown:.md.mkd.markdown
+--regex-markdown=/^#[ \t]+(.+)$/\1/h,header/
+--regex-markdown=/^##[ \t]+(.+)$/　\1/h,header/
+--regex-markdown=/^###[ \t]+(.+)$/　  \1/h,header/
+--regex-markdown=/^####[ \t]+(.+)$/　    \1/h,header/
+--regex-markdown=/^#####[ \t]+(.+)$/　      \1/h,header/
+--regex-markdown=/^######[ \t]+(.+)$/　        \1/h,header/
 
---langdef=powershell
---langmap=powershell:.ps1.psm1
---regex-powershell=/^[Ff]ilter[\t ]*([a-zA-Z0-9_-]+)/\1/i,filter/
---regex-powershell=/^[Ff]unction[\t ]*([a-zA-Z0-9_-]+)/\1/f,function/
---regex-powershell=/^[sS]et-[Aa]lias[\t ]*([a-zA-Z0-9_-]+)/\1/a,alias/
+--langdef=textile
+--langmap=textile:.textile
+--regex-textile=/^h1\.[ \t]*(.+)$/\1/h,header/
+--regex-textile=/^h2\.[ \t]*(.+)$/　\1/h,header/
+--regex-textile=/^h3\.[ \t]*(.+)$/　  \1/h,header/
+--regex-textile=/^h4\.[ \t]*(.+)$/　    \1/h,header/
+--regex-textile=/^h5\.[ \t]*(.+)$/　      \1/h,header/
+--regex-textile=/^h6\.[ \t]*(.+)$/　        \1/h,header/
 
---langdef=r
---langmap=r:.R.r
---regex-r=/^"?([.A-Za-z][.A-Za-z0-9_]*)"?[ \t]*<-[ \t][^f][^u][^n][^c][^t][^i][^o][^n]/\1/g,GlobalVars/
---regex-r=/^[ \t]*"?([.A-Za-z][.A-Za-z0-9_]*)"?[ \t]*<-[ \t]function/\1/f,Functions/
---regex-r=/[ \t]"?([.A-Za-z][.A-Za-z0-9_]*)"?[ \t]*<-[ \t][^f][^u][^n][^c][^t][^i][^o][^n]/\1/v,FunctionVariables/
-
---langdef=xquery
---langmap=xquery:.xq
---regex-xquery=/^(declare|define)[ \t]*(private)?[ \t]*(%an:automatic)?[ \t]*variable[ \t]*\$([_a-zA-Z0-9:-]*:)?([_a-zA-Z0-9-]+)/\5/v,variable/
---regex-xquery=/^(declare|define)[ \t]*(private)?[ \t]*(updating)?[ \t]*(%an:sequential)?[ \t]*(%an:nondeterministic)?[ \t]*function[ \t]*([_a-zA-Z0-9:-]*:)?([_a-zA-Z0-9-]+)/\7/f,function/
---regex-xquery=/^module namespace[ \t]*(\w+)[ \t]*=.*/\1/m,module/
-
---langdef=xslt
---langmap=xslt:.xsl
---regex-xslt=/<xsl:template.*name="(\S+)".*>/\1/t,template/
---regex-xslt=/<xsl:variable.*name="(\S+)".*>/\1/v,variable/
-
---langdef=elixir
---langmap=elixir:.ex.exs
---regex-elixir=/^[ \t]*defcallback[ \t]+([a-z_][a-zA-Z0-9_?!]*)/\1/c,callbacks,callbacks (defcallback ...)/
---regex-elixir=/^[ \t]*defdelegate[ \t]+([a-z_][a-zA-Z0-9_?!]*)/\1/d,delegates,delegates (defdelegate ...)/
---regex-elixir=/^[ \t]*defexception[ \t]+([A-Z][a-zA-Z0-9_]*\.)*([A-Z][a-zA-Z0-9_?!]*)/\2/e,exceptions,exceptions (defexception ...)/
---regex-elixir=/^[ \t]*defimpl[ \t]+([A-Z][a-zA-Z0-9_]*\.)*([A-Z][a-zA-Z0-9_?!]*)/\2/i,implementations,implementations (defimpl ...)/
---regex-elixir=/^[ \t]*defmacro(p?)[ \t]+([a-zA-Z0-9_?!]+)?[ \t]+([^ \tA-Za-z0-9_]+)[ \t]*[a-zA-Z0-9_!?!]/\3/o,operators,operators (e.g. "defmacro a <<< b")/
---regex-elixir=/^[ \t]*defmacro(p?)[ \t]+([a-z_][a-zA-Z0-9_?!]*)\(/\2/a,macros,macros (defmacro ...)/
---regex-elixir=/^[ \t]*defmodule[ \t]+([A-Z][a-zA-Z0-9_]*\.)*([A-Z][a-zA-Z0-9_?!]*)/\2/m,modules,modules (defmodule ...)/
---regex-elixir=/^[ \t]*defprotocol[ \t]+([A-Z][a-zA-Z0-9_]*\.)*([A-Z][a-zA-Z0-9_?!]*)/\2/p,protocols,protocols (defprotocol...)/
---regex-elixir=/^[ \t]*def(p?)[ \t]+([a-z_][a-zA-Z0-9_?!]*)/\2/f,functions,functions (def ...)/
---regex-elixir=/^[ \t]*Record\.defrecord[ \t]+:([a-zA-Z0-9_]+)/\1/r,records,records (defrecord...)/
-
---langmap=javascript:.js
---regex-javascript=/([A-Za-z0-9._$]+)[ \t]*=[ \t]*\{/\1/objectbjects/
---regex-javascript=/([A-Za-z0-9._$]+)[ \t]*[:=][ \t]*[\(]function[ \t]*\(/\1/functionunctions/
---regex-javascript=/^[ \t]*([A-Za-z0-9._$]+)[ \t]*[:][ \t]*[^\{]/\1/p,property,properties/
---regex-javascript=/\/\/[ \t]*(FIXME)[ \t]*\:*(.*)/\1/i,FIXME/
---regex-javascript=/^[ \t]*[\(]function[ \t]*([A-Za-z0-9._$]+)/\1/functionunctions/
---regex-javascript=/\/\/[ \t]*(TODO)[ \t]*\:*(.*)/\1/i,TODO/
---regex-javascript=/^[ \t]+var[ \t]*([A-Za-z0-9._$]+)[ \t]*=[ \t]*[\d"'\[]/\1/v,variable,variables/
-
---regex-html=/class="([A-Za-z0-9_-]+)"/\1/c,class,classes/
---regex-html=/id="([A-Za-z0-9_-]+)"/\1/idds/
+--langdef=Elixir
+--langmap=Elixir:.ex.exs
+--regex-Elixir=/^[ \t]*def(p?)[ \t]+([a-z_][a-zA-Z0-9_?!]*)/\2/f,functions,functions (def ...)/
+--regex-Elixir=/^[ \t]*defcallback[ \t]+([a-z_][a-zA-Z0-9_?!]*)/\1/c,callbacks,callbacks (defcallback ...)/
+--regex-Elixir=/^[ \t]*defdelegate[ \t]+([a-z_][a-zA-Z0-9_?!]*)/\1/d,delegates,delegates (defdelegate ...)/
+--regex-Elixir=/^[ \t]*defexception[ \t]+([A-Z][a-zA-Z0-9_]*\.)*([A-Z][a-zA-Z0-9_?!]*)/\2/e,exceptions,exceptions (defexception ...)/
+--regex-Elixir=/^[ \t]*defimpl[ \t]+([A-Z][a-zA-Z0-9_]*\.)*([A-Z][a-zA-Z0-9_?!]*)/\2/i,implementations,implementations (defimpl ...)/
+--regex-Elixir=/^[ \t]*defmacro(p?)[ \t]+([a-z_][a-zA-Z0-9_?!]*)\(/\2/a,macros,macros (defmacro ...)/
+--regex-Elixir=/^[ \t]*defmacro(p?)[ \t]+([a-zA-Z0-9_?!]+)?[ \t]+([^ \tA-Za-z0-9_]+)[ \t]*[a-zA-Z0-9_!?!]/\3/o,operators,operators (e.g. "defmacro a <<< b")/
+--regex-Elixir=/^[ \t]*defmodule[ \t]+([A-Z][a-zA-Z0-9_]*\.)*([A-Z][a-zA-Z0-9_?!]*)/\2/m,modules,modules (defmodule ...)/
+--regex-Elixir=/^[ \t]*defprotocol[ \t]+([A-Z][a-zA-Z0-9_]*\.)*([A-Z][a-zA-Z0-9_?!]*)/\2/p,protocols,protocols (defprotocol...)/
+--regex-Elixir=/^[ \t]*Record\.defrecord[ \t]+:([a-zA-Z0-9_]+)/\1/r,records,records (defrecord...)/
+--regex-Elixir=/^[ \t]*test[ \t]+\"([a-z_][a-zA-Z0-9_?! ]*)\"*/\1/t,tests,tests (test ...)/
