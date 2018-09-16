@@ -45,7 +45,7 @@ buffer automatically."
   :type 'boolean
   :package-version '(company . "0.7.3"))
 
-(defcustom company-etags-everywhere  '(html-mode web-mode nxml-mode)
+(defcustom company-etags-everywhere  t
   "Non-nil to offer completions in comments and strings.
 Set it to t or to a list of major modes."
   :type '(choice (const :tag "Off" nil)
