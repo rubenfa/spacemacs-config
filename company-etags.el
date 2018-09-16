@@ -93,7 +93,7 @@ Set it to t or to a list of major modes."
     (prefix (and (apply #'derived-mode-p company-etags-modes)
                  (or (eq t company-etags-everywhere)
                      (apply #'derived-mode-p company-etags-everywhere)
-                     (not (company-in-string-or-comment)))
+                     ;;(not (company-in-string-or-comment)))
                  (company-etags-buffer-table)
                  (or (company-grab-symbol) 'stop)))
     (candidates (company-etags--candidates arg))
