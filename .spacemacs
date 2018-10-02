@@ -45,8 +45,8 @@ values."
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(
                                       all-the-icons
-
                                       rainbow-mode
+                                      guru-mode
                                       )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -252,9 +252,12 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   (with-eval-after-load 'company-etags '(progn (add-to-list 'company-etags-modes 'web-mode)))
   (setq company-etags-everywhere '(html-mode web-mode nxml-mode))
-  ;; (ctags-global-auto-update-mode)
-  ;; (setq ctags-update-prompt-create-tags nil);you need manually create TAGS in your project
-  
+
+  ;; Para prevenir el bug que hace que Spacemacs copie texto aleatorio al abrir un archivo con el mouse
+  (add-hook 'spacemacs-buffer-mode-hook (lambda ()
+                                          (set (make-local-variable 'mouse-1-click-follows-link) nil)))
+
+
   )
 
 (defun dotspacemacs/user-config ()
@@ -266,7 +269,8 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (spacemacs/toggle-indent-guide-globally-on)
 	(define-key global-map (kbd "C-+") 'text-scale-increase)
-	(define-key global-map (kbd "C--") 'text-scale-decrease)
+  (define-key global-map (kbd "C--") 'text-scale-decrease)
+  (define-key global-map (kbd "C-x @") 'evil-toggle-fold)
 	(spacemacs/declare-prefix "o" "neotree-actions")
 	(spacemacs/set-leader-keys "oo" 'neotree-projectile-action)
 	(spacemacs/set-leader-keys "oh" 'neotree-hide)	  	
@@ -311,6 +315,32 @@ you should place your code here."
 
   (add-hook 'after-save-hook 'er-refresh-etags)
 
+  (guru-global-mode t)
+
+
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time  
+  (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling  
+  (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse  
+  (setq scroll-step 1) ;; keyboard scroll one line at a time
+
+  (defun update-scroll-bars ()
+    (interactive)
+    (mapc (lambda (win)
+            (set-window-scroll-bars win nil))
+          (window-list))
+    (set-window-scroll-bars (selected-window) 10 'right))
+
+
+  (add-hook 'window-configuration-change-hook 'update-scroll-bars)
+  (add-hook 'buffer-list-update-hook 'update-scroll-bars)
+
+  ;; (defun automatic-scroll-bar 
+  ;;       (toggle-scroll-bar)
+  ;; )
+
+  ;; (add-hook 'focus-in-hook 'automatic-scroll-bar)
+
+
   ;; (defun my-csharp-mode-setup ()
   ;;   (setq indent-tabs-mode nil)
   ;;   (setq c-syntactic-indentation t)
@@ -338,7 +368,7 @@ you should place your code here."
     ("94ba29363bfb7e06105f68d72b268f85981f7fba2ddef89331660033101eb5e5" "3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "51e228ffd6c4fff9b5168b31d5927c27734e82ec61f414970fc6bcce23bc140d" "8288b9b453cdd2398339a9fd0cec94105bc5ca79b86695bd7bf0381b1fbe8147" default)))
  '(package-selected-packages
    (quote
-    (rainbow-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line))))
+    (yascroll guru-mode rainbow-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
