@@ -267,15 +267,28 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+
   (spacemacs/toggle-indent-guide-globally-on)
-	(define-key global-map (kbd "C-+") 'text-scale-increase)
+
+
+  ; CUSTOM SHORTCUTS
+  (define-key global-map (kbd "C-+") 'text-scale-increase)
   (define-key global-map (kbd "C--") 'text-scale-decrease)
   (define-key global-map (kbd "C-x @") 'evil-toggle-fold)
 	(spacemacs/declare-prefix "o" "neotree-actions")
 	(spacemacs/set-leader-keys "oo" 'neotree-projectile-action)
-	(spacemacs/set-leader-keys "oh" 'neotree-hide)	  	
-	(add-hook 'projectile-find-file-hook #'neotree-projectile-action)  
-  	(setq neo-theme 'icons)
+	(spacemacs/set-leader-keys "oh" 'neotree-hide)
+  (guru-global-mode t) ; disables arrow keys to be more emacs pro
+
+
+  ; PROJECTILE ACTIONS
+  (add-hook 'projectile-find-file-hook #'neotree-projectile-action) 
+
+
+  ; DISPLAY OF BUFFERS, WINDOWS AND 
+  (setq neo-theme 'icons)
+
+  ; To open Alchemist (compile, tets etc) in other frame
 	(add-to-list 'display-buffer-alist
                     `(,(rx bos "*Alchemist" (* not-newline) "*" eos)
                       (display-buffer-reuse-window
@@ -284,22 +297,26 @@ you should place your code here."
                       (reuse-window . t)
                          (inhibit-same-window . t)
                          (window-height . 0.25)))
-  (setq alchemist-goto-elixir-source-dir "/home/ruben/Desarrollo/libraries/elixir/elixir-master")
 
+  (golden-ratio-mode 1) ; to open two autoexpandable windows
+
+  ; ELIXIR
+  (setq alchemist-goto-elixir-source-dir "~/Desarrollo/libraries/elixir/elixir-master")
+
+  ; ISPELL CONFIGURATION
   (add-hook 'markdown-mode-hook 'flyspell-mode) ;start flyspell-mode
   (setq ispell-dictionary "spanish")    ;set the default dictionary
   (add-hook 'markdown-mode-hook 'ispell)   ;start ispell
   (add-hook 'markdown-mode-hook (lambda () (setq-default word-wrap t)))
 
-  (golden-ratio-mode 1)
 
+  ; HTML AND CSS
   (push '(company-web-html company-etags company-css) company-backends-web-mode)
-
-
   (add-hook 'css-mode-hook 'rainbow-mode)
   (add-hook 'web-mode-hook 'rainbow-mode)
   (add-hook 'html-mode-hook 'rainbow-mode)
 
+  ; CTAGS regeneration
   (setq projectile-tags-command "ctags -e -R *")
   (setq tags-revert-without-query t)
 
@@ -315,14 +332,17 @@ you should place your code here."
 
   (add-hook 'after-save-hook 'er-refresh-etags)
 
-  (guru-global-mode t)
+  ; Avoid spacemacs message every time CTAGS are regenerated
+  (setq spacemacs-large-file-modes-list '(tags-table-mode))
 
 
+  ;SCROLLING
   (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time  
   (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling  
   (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse  
   (setq scroll-step 1) ;; keyboard scroll one line at a time
 
+  ; To show scrollbars only in selected buffer
   (defun update-scroll-bars ()
     (interactive)
     (mapc (lambda (win)
@@ -330,28 +350,9 @@ you should place your code here."
           (window-list))
     (set-window-scroll-bars (selected-window) 10 'right))
 
-
   (add-hook 'window-configuration-change-hook 'update-scroll-bars)
   (add-hook 'buffer-list-update-hook 'update-scroll-bars)
 
-  ;; (defun automatic-scroll-bar 
-  ;;       (toggle-scroll-bar)
-  ;; )
-
-  ;; (add-hook 'focus-in-hook 'automatic-scroll-bar)
-
-
-  ;; (defun my-csharp-mode-setup ()
-  ;;   (setq indent-tabs-mode nil)
-  ;;   (setq c-syntactic-indentation t)
-  ;;   (c-set-style "ellemtel")
-  ;;   (setq c-basic-offset 4)
-  ;;   (setq truncate-lines t)
-  ;;   (setq tab-width 4)
-  ;;   (setq evil-shift-width 4)
-  ;;   (local-set-key (kbd "C-c C-c") 'recompile))
-
-  ;; (add-hook 'csharp-mode-hook 'my-csharp-mode-setup t)
   ) 
   
 
