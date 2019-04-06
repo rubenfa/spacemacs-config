@@ -250,8 +250,8 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
 
-  (with-eval-after-load 'company-etags '(progn (add-to-list 'company-etags-modes 'web-mode)))
-  (setq company-etags-everywhere '(html-mode web-mode nxml-mode))
+  ;; (with-eval-after-load 'company-etags '(progn (add-to-list 'company-etags-modes 'web-mode)))
+  ;; (setq company-etags-everywhere '(html-mode web-mode nxml-mode))
 
   ;; Para prevenir el bug que hace que Spacemacs copie texto aleatorio al abrir un archivo con el mouse
   (add-hook 'spacemacs-buffer-mode-hook (lambda ()
@@ -270,6 +270,8 @@ you should place your code here."
 
   (spacemacs/toggle-indent-guide-globally-on)
 
+  ; SHOW FULL PATH OF OPEN BUFFER ON MODE-LINE
+  (with-eval-after-load 'spaceline-config (spaceline-define-segment buffer-id (if (buffer-file-name) (abbreviate-file-name (buffer-file-name)) (powerline-buffer-id))))
 
   ; CUSTOM SHORTCUTS
   (define-key global-map (kbd "C-+") 'text-scale-increase)
@@ -278,6 +280,9 @@ you should place your code here."
 	(spacemacs/declare-prefix "o" "neotree-actions")
 	(spacemacs/set-leader-keys "oo" 'neotree-projectile-action)
 	(spacemacs/set-leader-keys "oh" 'neotree-hide)
+  (spacemacs/set-leader-keys "of" 'neotree-find)
+  (spacemacs/set-leader-keys "op" 'neotree-find-project-root)
+  (spacemacs/set-leader-keys "wP" 'my-turn-current-window-into-frame)
   (guru-global-mode t) ; disables arrow keys to be more emacs pro
 
 
@@ -287,6 +292,14 @@ you should place your code here."
 
   ; DISPLAY OF BUFFERS, WINDOWS AND 
   (setq neo-theme 'icons)
+  (setq neo-window-position 'right)
+
+  (defun my-turn-current-window-into-frame ()
+    (interactive)
+    (let ((buffer (current-buffer)))
+      (unless (one-window-p)
+        (delete-window))
+      (display-buffer-pop-up-frame buffer nil)))
 
   ; To open Alchemist (compile, tets etc) in other frame
 	(add-to-list 'display-buffer-alist
@@ -302,6 +315,7 @@ you should place your code here."
 
   ; ELIXIR
   (setq alchemist-goto-elixir-source-dir "~/Desarrollo/libraries/elixir/elixir-master")
+  (setq flycheck-elixir-credo-strict t)
 
   ; ISPELL CONFIGURATION
   (add-hook 'markdown-mode-hook 'flyspell-mode) ;start flyspell-mode
@@ -311,29 +325,29 @@ you should place your code here."
 
 
   ; HTML AND CSS
-  (push '(company-web-html company-etags company-css) company-backends-web-mode)
+  ;; (push '(company-web-html company-etags company-css) company-backends-web-mode)
   (add-hook 'css-mode-hook 'rainbow-mode)
   (add-hook 'web-mode-hook 'rainbow-mode)
   (add-hook 'html-mode-hook 'rainbow-mode)
 
-  ; CTAGS regeneration
-  (setq projectile-tags-command "ctags -e -R *")
-  (setq tags-revert-without-query t)
+  ;; ; CTAGS regeneration
+  ;; (setq projectile-tags-command "ctags -e -R *")
+  ;; (setq tags-revert-without-query t)
 
-  (defun er-refresh-etags (&optional extension)
-    "Run etags on all peer files in current dir and reload them silently."
-    (interactive)
-    (when(derived-mode-p 'prog-mode)
-    (when (memq this-command '(save-buffer save-some-buffers))
-     (projectile-regenerate-tags)
-    (let ((tags-revert-without-query t))  ; don't query, revert silently          
-      (visit-tags-table default-directory nil))))
-  )
+  ;; (defun er-refresh-etags (&optional extension)
+  ;;   "Run etags on all peer files in current dir and reload them silently."
+  ;;   (interactive)
+  ;;   (when(derived-mode-p 'prog-mode)
+  ;;   (when (memq this-command '(save-buffer save-some-buffers))
+  ;;    (projectile-regenerate-tags)
+  ;;   (let ((tags-revert-without-query t))  ; don't query, revert silently          
+  ;;     (visit-tags-table default-directory nil))))
+  ;; )
 
-  (add-hook 'after-save-hook 'er-refresh-etags)
+  ;; (add-hook 'after-save-hook 'er-refresh-etags)
 
-  ; Avoid spacemacs message every time CTAGS are regenerated
-  (setq spacemacs-large-file-modes-list '(tags-table-mode))
+  ;; ; Avoid spacemacs message every time CTAGS are regenerated
+  ;; (setq spacemacs-large-file-modes-list '(tags-table-mode))
 
 
   ;SCROLLING
@@ -369,7 +383,7 @@ you should place your code here."
     ("94ba29363bfb7e06105f68d72b268f85981f7fba2ddef89331660033101eb5e5" "3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "51e228ffd6c4fff9b5168b31d5927c27734e82ec61f414970fc6bcce23bc140d" "8288b9b453cdd2398339a9fd0cec94105bc5ca79b86695bd7bf0381b1fbe8147" default)))
  '(package-selected-packages
    (quote
-    (yascroll guru-mode rainbow-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line))))
+    (dockerfile-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
