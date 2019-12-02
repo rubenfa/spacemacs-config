@@ -27,6 +27,7 @@ values."
      emacs-lisp
      git
      markdown
+     ;;lsp
      ;; org
      ;;  (require 'etags-update)(shell :variables
      ;;        shell-default-height 30
@@ -38,6 +39,8 @@ values."
      ;;the (require 'etags-update)mes-megapack
      spacemacs-layouts
      csharp
+     ruby
+     ruby-on-rails
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -47,6 +50,8 @@ values."
                                       all-the-icons
                                       rainbow-mode
                                       guru-mode
+                                      exunit
+                                      neotree
                                       )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -115,8 +120,8 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("Hack"
-                               :size 15
+   dotspacemacs-default-font '("Cascadia Code"
+                               :size 18
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -149,7 +154,7 @@ values."
    ;; Name of the default layout (default "Default")
    dotspacemacs-default-layout-name "Default"
    ;; If non nil the default layout name is displayed in the mode-line.
-   ;; (default nil)
+   ;; (depfault nil)
    dotspacemacs-display-default-layout nil
    ;; If non nil then the last auto saved layouts are resume automatically upon
    ;; start. (default nil)
@@ -253,6 +258,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; (with-eval-after-load 'company-etags '(progn (add-to-list 'company-etags-modes 'web-mode)))
   ;; (setq company-etags-everywhere '(html-mode web-mode nxml-mode))
 
+
   ;; Para prevenir el bug que hace que Spacemacs copie texto aleatorio al abrir un archivo con el mouse
   (add-hook 'spacemacs-buffer-mode-hook (lambda ()
                                           (set (make-local-variable 'mouse-1-click-follows-link) nil)))
@@ -267,6 +273,41 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+
+
+ ;; (use-package lsp-mode
+ ;;   :commands lsp
+ ;;   :ensure t
+ ;;   :diminish lsp-mode
+ ;;   :hook
+ ;;    (elixir-mode . lsp)
+ ;;   :init
+ ;;   (add-to-list 'exec-path "~/Desarrollo/elsp/elixir-ls/release"))
+
+
+ ;;  (with-eval-after-load 'elixir-mode
+ ;;   (spacemacs/declare-prefix-for-mode 'elixir-mode
+ ;;     "mt" "tests" "testing related functionality")
+ ;;   (spacemacs/set-leader-keys-for-major-mode 'elixir-mode
+ ;;     "tb" 'exunit-verify-all
+ ;;     "ta" 'exunit-verify
+ ;;     "tk" 'exunit-rerun
+ ;;     "tt" 'exunit-verify-single))
+
+  (setq frame-title-format
+        '("" invocation-name ": "
+          (:eval
+           (if (buffer-file-name)
+               (abbreviate-file-name (buffer-file-name))
+             "%b"))))
+
+  ;; Create a buffer-local hook to run elixir-format on save, only when we enable elixir-mode.
+  (add-hook 'elixir-mode-hook
+            (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
+
+  ;; (setq frame-title-format
+  ;;       (list (format "%s %%S: %%j " (system-name))
+              ;; '(buffer-file-name "%f" (dired-directory dired-directory "%b"))))
 
   (spacemacs/toggle-indent-guide-globally-on)
 
@@ -383,7 +424,7 @@ you should place your code here."
     ("94ba29363bfb7e06105f68d72b268f85981f7fba2ddef89331660033101eb5e5" "3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "51e228ffd6c4fff9b5168b31d5927c27734e82ec61f414970fc6bcce23bc140d" "8288b9b453cdd2398339a9fd0cec94105bc5ca79b86695bd7bf0381b1fbe8147" default)))
  '(package-selected-packages
    (quote
-    (dockerfile-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line))))
+    (rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv projectile-rails rake inflections minitest feature-mode chruby bundler inf-ruby exunit lsp-mode ws-butler winum volatile-highlights vi-tilde-fringe uuidgen toc-org spaceline powerline restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text lorem-ipsum linum-relative link-hint indent-guide lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation projectile request google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu goto-chg undo-tree eval-sexp-fu pkg-info epl dumb-jump f define-word column-enforce-mode clean-aindent-mode bind-key auto-highlight-symbol packed aggressive-indent adaptive-wrap ace-window ace-link helm avy helm-core async popup flymake jsonrpc eglot yaml-mode web-mode web-beautify tagedit smeargle slim-mode scss-mode sass-mode rainbow-mode pug-mode orgit omnisharp mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc helm-gitignore helm-css-scss helm-company helm-c-yasnippet haml-mode guru-mode gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip evil-magit magit transient git-commit with-editor emmet-mode diff-hl csharp-mode company-web web-completion-data company-tern dash-functional tern company-statistics coffee-mode auto-yasnippet yasnippet auto-dictionary all-the-icons memoize ac-ispell auto-complete dockerfile-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
