@@ -17,18 +17,19 @@ values."
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
-   '(
+   '(sql
      yaml
      javascript
      html
-     react         
+     react
      auto-completion
      ;; better-defaults
      emacs-lisp
      git
+     github
      markdown
      lsp
-     ;; org
+     org
      ;;  (require 'etags-update)(shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
@@ -36,13 +37,13 @@ values."
      syntax-checking
      version-control
      elixir
+     (elixir :variables elixir-backend 'lsp)
      ;;the (require 'etags-update)mes-megapack
      spacemacs-layouts
      csharp
      ruby
      ruby-on-rails
      (ruby :variables ruby-enable-enh-ruby-mode t)
-     ;;(ruby-mode (ruby-backend . lsp))
      (ruby :variables ruby-backend 'lsp)
      )
    ;; List of additional packages that will be installed without being
@@ -55,9 +56,11 @@ values."
                                       guru-mode
                                       exunit
                                       neotree
+                                      ;; github-browse-file
+                                      ;; github-browse-commit
                                       )
    ;; A list of packages and/or extensions that will not be install and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(alchemist)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'. (default t)
@@ -124,7 +127,7 @@ values."
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
    dotspacemacs-default-font '("Cascadia Code"
-                               :size 18
+                               :size 16
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -137,7 +140,7 @@ values."
    ;; pressing `<leader> m`. Set it to `nil` to disable it. (default ",")
    dotspacemacs-major-mode-leader-key ","
    ;; Major mode leader key accessible in `emacs state' and `insert state'.
-   ;; (default "C-M-m)
+   ;; (default "C-M-m)pp
    dotspacemacs-major-mode-emacs-leader-key "C-M-m"
    ;; These variables control whether separate commands are bound in the GUI to
    ;; the key pairs C-i, TAB and C-m, RET.
@@ -205,7 +208,7 @@ values."
    ;; If non nil the frame is maximized when Emacs starts up.
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
    ;; (default nil) (Emacs 24.4+ only)
-   dotspacemacs-maximized-at-startup t
+   dotspacemacs-maximized-at-startup nil
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
@@ -248,6 +251,7 @@ values."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
+   dotspacemacs-mode-line-theme 'spacemacs
    ))
 
 (defun dotspacemacs/user-init ()
@@ -276,7 +280,6 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-
 
  ;; (use-package lsp-mode
  ;;   :commands lsp
@@ -312,6 +315,9 @@ you should place your code here."
   ;;       (list (format "%s %%S: %%j " (system-name))
               ;; '(buffer-file-name "%f" (dired-directory dired-directory "%b"))))
 
+
+  (setq indent-guide-delay 0.2)
+ 
   (spacemacs/toggle-indent-guide-globally-on)
 
   ; SHOW FULL PATH OF OPEN BUFFER ON MODE-LINE
@@ -327,13 +333,19 @@ you should place your code here."
   (spacemacs/set-leader-keys "of" 'neotree-find)
   (spacemacs/set-leader-keys "op" 'neotree-find-project-root)
   (spacemacs/set-leader-keys "wP" 'my-turn-current-window-into-frame)
+  ;; (spacemacs/set-leader-keys "ghl" 'github-browse-file "Open file in github")
+  ;; (spacemacs/set-leader-keys "ghc" 'github-browse-file "Open commit in github")
+
   (guru-global-mode t) ; disables arrow keys to be more emacs pro
 
 
   ; PROJECTILE ACTIONS
-  (add-hook 'projectile-find-file-hook #'neotree-projectile-action) 
+  (add-hook 'projectile-find-file-hook #'neotree-projectile-action)
 
-
+  (setq frame-title-format
+        '("%b @ " (:eval (last (s-split "/" (projectile-project-root) 1))))
+  )
+  
   ; DISPLAY OF BUFFERS, WINDOWS AND 
   (setq neo-theme 'icons)
   (setq neo-window-position 'right)
@@ -358,12 +370,49 @@ you should place your code here."
   (golden-ratio-mode 1) ; to open two autoexpandable windows
 
   ; ELIXIR
-  (setq alchemist-goto-elixir-source-dir "~/Desarrollo/libraries/elixir/elixir-master")
+  ; (setq alchemist-goto-elixir-source-dir "~/Desarrollo/libraries/elixir/elixir-master")
   (setq flycheck-elixir-credo-strict t)
 
-  ;Ruby
-  ;(add-hook 'robe-mode-hook 'ac-robe-setup)
+  ;; (add-to-list
+  ;;  'eglot-server-programs
+  ;;  '(elixir-mode . ("bash" "/home/rubenfa/Desarrollo/utilities/elixir-ls/release/language_server.sh")))
 
+;  (add-to-list 'eglot-server-programs `(elixir-mode "bash" ""))
+
+  (use-package lsp-mode
+    :commands lsp
+    :ensure t
+    :diminish lsp-mode
+    :hook
+    (elixir-mode . lsp)
+    :init
+    (add-to-list 'exec-path "/home/rubenfa/Desarrollo/utilities/elixir-ls/release"))
+
+  (defvar lsp-elixir--config-options (make-hash-table))
+
+  (add-hook 'lsp-after-initialize-hook
+            (lambda ()
+              (lsp--set-configuration `(:elixirLS, lsp-elixir--config-options))))
+ 
+  ;Ruby
+  ;; Code folding
+  (add-hook 'ruby-mode-hook
+            (lambda () (hs-minor-mode)))
+
+  (eval-after-load "hideshow"
+    '(add-to-list 'hs-special-modes-alist
+                  `(ruby-mode
+                    ,(rx (or "def" "class" "module" "do" "{" "[")) ; Block start
+                    ,(rx (or "}" "]" "end"))                       ; Block end
+                    ,(rx (or "#" "=begin"))                        ; Comment start
+                    ruby-forward-sexp nil)))
+
+  (global-set-key (kbd "C-c h <left>") 'hs-hide-block)
+  (global-set-key (kbd "C-c h <right>") 'hs-show-block)
+  (global-set-key (kbd "C-c h <up>") 'hs-hide-level)
+
+  ;NEOTREE
+  (setq neo-window-width 35)
 
   ; ISPELL CONFIGURATION
   (add-hook 'markdown-mode-hook 'flyspell-mode) ;start flyspell-mode
@@ -377,6 +426,21 @@ you should place your code here."
   (add-hook 'css-mode-hook 'rainbow-mode)
   (add-hook 'web-mode-hook 'rainbow-mode)
   (add-hook 'html-mode-hook 'rainbow-mode)
+
+  (setq-default
+   ;; js2-mode
+   js2-basic-offset 2
+   ;; web-mode
+   css-indent-offset 2
+   web-mode-markup-indent-offset 2
+   web-mode-css-indent-offset 2
+   web-mode-code-indent-offset 2
+   web-mode-attr-indent-offset 2)
+
+  (with-eval-after-load 'web-mode
+    (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
+    (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
+    (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil)))
 
   ;; ; CTAGS regeneration
   ;; (setq projectile-tags-command "ctags -e -R *")
@@ -415,9 +479,22 @@ you should place your code here."
   (add-hook 'window-configuration-change-hook 'update-scroll-bars)
   (add-hook 'buffer-list-update-hook 'update-scroll-bars)
 
-  ) 
-  
+  ;;GITHUB
+  ;; (require 'magit-gh-pulls)
+  ;; (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
 
+  ;; JT
+  (defun sync-prj (s)
+    "Sync current project with devcloud"
+    (interactive "sIntroduce project to sync: ")
+    (shell-command 'concat("~/Desarrollo/utilities/devcloud/script/sync -f " s))
+  )
+
+  (spacemacs/declare-prefix "oj" "jt-actions")
+  (spacemacs/declare-prefix "ojs" "sync")
+;;  (spacemacs/declare-prefix "ojsf" "sync farming")
+  (spacemacs/set-leader-keys "ojs" 'sync-prj)
+)
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -431,7 +508,7 @@ you should place your code here."
     ("94ba29363bfb7e06105f68d72b268f85981f7fba2ddef89331660033101eb5e5" "3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "51e228ffd6c4fff9b5168b31d5927c27734e82ec61f414970fc6bcce23bc140d" "8288b9b453cdd2398339a9fd0cec94105bc5ca79b86695bd7bf0381b1fbe8147" default)))
  '(package-selected-packages
    (quote
-    (enh-ruby-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv projectile-rails rake inflections minitest feature-mode chruby bundler inf-ruby exunit lsp-mode ws-butler winum volatile-highlights vi-tilde-fringe uuidgen toc-org spaceline powerline restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text lorem-ipsum linum-relative link-hint indent-guide lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation projectile request google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu goto-chg undo-tree eval-sexp-fu pkg-info epl dumb-jump f define-word column-enforce-mode clean-aindent-mode bind-key auto-highlight-symbol packed aggressive-indent adaptive-wrap ace-window ace-link helm avy helm-core async popup flymake jsonrpc eglot yaml-mode web-mode web-beautify tagedit smeargle slim-mode scss-mode sass-mode rainbow-mode pug-mode orgit omnisharp mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc helm-gitignore helm-css-scss helm-company helm-c-yasnippet haml-mode guru-mode gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip evil-magit magit transient git-commit with-editor emmet-mode diff-hl csharp-mode company-web web-completion-data company-tern dash-functional tern company-statistics coffee-mode auto-yasnippet yasnippet auto-dictionary all-the-icons memoize ac-ispell auto-complete dockerfile-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line))))
+    (enh-ruby-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv projectile-rails rake inflections minitest feature-mode chruby bundler inf-ruby exunit lsp-mode ws-butler winum volatile-highlights vi-tilde-fringe uuidgen toc-org spaceline powerline restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text lorem-ipsum linum-relative link-hint indent-guide lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation projectile request google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu goto-chg undo-tree eval-sexp-fu pkg-info epl dumb-jump f define-word column-enforce-mode clean-aindent-mode bind-key auto-highlight-symbol packed aggressive-indent adaptive-wrap ace-window ace-link helm avy helm-core async popup flymake jsonrpc eglot yaml-mode web-mode web-beautify tagedit smeargle slim-mode scss-mode sass-mode rainbow-mode pug-mode orgit omnisharp mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc helm-gitignore helm-css-scss helm-company helm-c-yasnippet haml-mode guru-mode gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip evil-magit magit transient git-commit with-editor emmet-mode diff-hl csharp-mode company-web web-completion-data company-tern dash-functional tern company-statistics coffee-mode auto-yasnippet yasnippet auto-dictionary all-the-icons memoize ac-ispell auto-complete dockerfile-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line eglot))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -443,3 +520,28 @@ you should place your code here."
 
 
 
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("94ba29363bfb7e06105f68d72b268f85981f7fba2ddef89331660033101eb5e5" "3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "51e228ffd6c4fff9b5168b31d5927c27734e82ec61f414970fc6bcce23bc140d" "8288b9b453cdd2398339a9fd0cec94105bc5ca79b86695bd7bf0381b1fbe8147" default)))
+ '(package-selected-packages
+   (quote
+    (dap-mode bui enh-ruby-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv projectile-rails rake inflections minitest feature-mode chruby bundler inf-ruby exunit lsp-mode ws-butler winum volatile-highlights vi-tilde-fringe uuidgen toc-org spaceline powerline restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text lorem-ipsum linum-relative link-hint indent-guide lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation projectile request google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu goto-chg undo-tree eval-sexp-fu pkg-info epl dumb-jump f define-word column-enforce-mode clean-aindent-mode bind-key auto-highlight-symbol packed aggressive-indent adaptive-wrap ace-window ace-link helm avy helm-core async popup flymake jsonrpc eglot yaml-mode web-mode web-beautify tagedit smeargle slim-mode scss-mode sass-mode rainbow-mode pug-mode orgit omnisharp mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc helm-gitignore helm-css-scss helm-company helm-c-yasnippet haml-mode guru-mode gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip evil-magit magit transient git-commit with-editor emmet-mode diff-hl csharp-mode company-web web-completion-data company-tern dash-functional tern company-statistics coffee-mode auto-yasnippet yasnippet auto-dictionary all-the-icons memoize ac-ispell auto-complete dockerfile-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line eglot))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((((class color) (min-colors 89)) (:foreground "#F7F7F7" :background "#282828"))))
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+)
