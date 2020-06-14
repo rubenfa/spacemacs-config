@@ -27,12 +27,11 @@ values."
      emacs-lisp
      git
      github
+     ibuffer
+       (ibuffer :variables ibuffer-group-buffers-by nil)
      markdown
      lsp
      org
-     ;;  (require 'etags-update)(shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
      spell-checking
      syntax-checking
      version-control
@@ -45,6 +44,7 @@ values."
      ruby-on-rails
      (ruby :variables ruby-enable-enh-ruby-mode t)
      (ruby :variables ruby-backend 'lsp)
+     (treemacs :variables treemacs-use-scope-type 'Frames)
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -55,10 +55,9 @@ values."
                                       rainbow-mode
                                       guru-mode
                                       exunit
-                                      neotree
-                                      ;; github-browse-file
-                                      ;; github-browse-commit
-                                      )
+                                      ;; neotree
+                                      ibuffer-sidebar
+                                     )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '(alchemist)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -281,25 +280,7 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
- ;; (use-package lsp-mode
- ;;   :commands lsp
- ;;   :ensure t
- ;;   :diminish lsp-mode
- ;;   :hook
- ;;    (elixir-mode . lsp)
- ;;   :init
- ;;   (add-to-list 'exec-path "~/Desarrollo/elsp/elixir-ls/release"))
-
-
- ;;  (with-eval-after-load 'elixir-mode
- ;;   (spacemacs/declare-prefix-for-mode 'elixir-mode
- ;;     "mt" "tests" "testing related functionality")
- ;;   (spacemacs/set-leader-keys-for-major-mode 'elixir-mode
- ;;     "tb" 'exunit-verify-all
- ;;     "ta" 'exunit-verify
- ;;     "tk" 'exunit-rerun
- ;;     "tt" 'exunit-verify-single))
-
+  ;; TITLES OF WINDOWS AND FRAMES
   (setq frame-title-format
         '("" invocation-name ": "
           (:eval
@@ -307,36 +288,101 @@ you should place your code here."
                (abbreviate-file-name (buffer-file-name))
              "%b"))))
 
-  ;; Create a buffer-local hook to run elixir-format on save, only when we enable elixir-mode.
-  (add-hook 'elixir-mode-hook
-            (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
-
-  ;; (setq frame-title-format
-  ;;       (list (format "%s %%S: %%j " (system-name))
-              ;; '(buffer-file-name "%f" (dired-directory dired-directory "%b"))))
-
 
   (setq indent-guide-delay 0.2)
- 
+
   (spacemacs/toggle-indent-guide-globally-on)
 
   ; SHOW FULL PATH OF OPEN BUFFER ON MODE-LINE
   (with-eval-after-load 'spaceline-config (spaceline-define-segment buffer-id (if (buffer-file-name) (abbreviate-file-name (buffer-file-name)) (powerline-buffer-id))))
 
+  (defun show-my-sidebar ()
+      treemacs
+      ibuffer-sidebar-show-sidebar
+      )
+
   ; CUSTOM SHORTCUTS
   (define-key global-map (kbd "C-+") 'text-scale-increase)
   (define-key global-map (kbd "C--") 'text-scale-decrease)
   (define-key global-map (kbd "C-x @") 'evil-toggle-fold)
-	(spacemacs/declare-prefix "o" "neotree-actions")
-	(spacemacs/set-leader-keys "oo" 'neotree-projectile-action)
-	(spacemacs/set-leader-keys "oh" 'neotree-hide)
-  (spacemacs/set-leader-keys "of" 'neotree-find)
-  (spacemacs/set-leader-keys "op" 'neotree-find-project-root)
-  (spacemacs/set-leader-keys "wP" 'my-turn-current-window-into-frame)
-  ;; (spacemacs/set-leader-keys "ghl" 'github-browse-file "Open file in github")
-  ;; (spacemacs/set-leader-keys "ghc" 'github-browse-file "Open commit in github")
+	(spacemacs/declare-prefix "o" "sidebar-actions")
+	(spacemacs/set-leader-keys "ot" 'treemacs)
+  (spacemacs/set-leader-keys "oi" 'ibuffer-sidebar-show-sidebar)
 
   (guru-global-mode t) ; disables arrow keys to be more emacs pro
+
+  ; TREEMACS
+  (use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (progn
+    (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+          treemacs-deferred-git-apply-delay      0.5
+          treemacs-directory-name-transformer    #'identity
+          treemacs-display-in-side-window        t
+          treemacs-eldoc-display                 t
+          treemacs-file-event-delay              5000
+          treemacs-file-extension-regex          treemacs-last-period-regex-value
+          treemacs-file-follow-delay             0.2
+          treemacs-file-name-transformer         #'identity
+          treemacs-follow-after-init             t
+          treemacs-git-command-pipe              ""
+          treemacs-goto-tag-strategy             'refetch-index
+          treemacs-indentation                   2
+          treemacs-indentation-string            " "
+          treemacs-is-never-other-window         nil
+          treemacs-max-git-entries               5000
+          treemacs-missing-project-action        'ask
+          treemacs-move-forward-on-expand        nil
+          treemacs-no-png-images                 nil
+          treemacs-no-delete-other-windows       t
+          treemacs-project-follow-cleanup        nil
+          treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-position                      'right
+          treemacs-recenter-distance             0.1
+          treemacs-recenter-after-file-follow    nil
+          treemacs-recenter-after-tag-follow     nil
+          treemacs-recenter-after-project-jump   'always
+          treemacs-recenter-after-project-expand 'on-distance
+          treemacs-show-cursor                   nil
+          treemacs-show-hidden-files             t
+          treemacs-silent-filewatch              nil
+          treemacs-silent-refresh                nil
+          treemacs-sorting                       'alphabetic-asc
+          treemacs-space-between-root-nodes      t
+          treemacs-tag-follow-cleanup            t
+          treemacs-tag-follow-delay              1.5
+          treemacs-user-mode-line-format         nil
+          treemacs-user-header-line-format       nil
+          treemacs-width                         35)
+
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    ;;(treemacs-resize-icons 44)
+    (treemacs-resize-icons 20)
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode t)
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null treemacs-python-executable)))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple))))
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+
+
 
 
   ; PROJECTILE ACTIONS
@@ -345,7 +391,7 @@ you should place your code here."
   (setq frame-title-format
         '("%b @ " (:eval (last (s-split "/" (projectile-project-root) 1))))
   )
-  
+
   ; DISPLAY OF BUFFERS, WINDOWS AND 
   (setq neo-theme 'icons)
   (setq neo-window-position 'right)
@@ -367,17 +413,22 @@ you should place your code here."
                          (inhibit-same-window . t)
                          (window-height . 0.25)))
 
+
   (golden-ratio-mode 1) ; to open two autoexpandable windows
 
+  (setq golden-ratio-exclude-modes '("ediff-mode"
+                                     "eshell-mode"
+                                     "dired-mode"
+                                     "treemacs-mode"
+                                     "ibuffer-sidebar-mode"))
+
   ; ELIXIR
-  ; (setq alchemist-goto-elixir-source-dir "~/Desarrollo/libraries/elixir/elixir-master")
   (setq flycheck-elixir-credo-strict t)
 
-  ;; (add-to-list
-  ;;  'eglot-server-programs
-  ;;  '(elixir-mode . ("bash" "/home/rubenfa/Desarrollo/utilities/elixir-ls/release/language_server.sh")))
+  ;; Create a buffer-local hook to run elixir-format on save, only when we enable elixir-mode.
+  (add-hook 'elixir-mode-hook
+            (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
 
-;  (add-to-list 'eglot-server-programs `(elixir-mode "bash" ""))
 
   (use-package lsp-mode
     :commands lsp
@@ -386,33 +437,32 @@ you should place your code here."
     :hook
     (elixir-mode . lsp)
     :init
-    (add-to-list 'exec-path "/home/rubenfa/Desarrollo/utilities/elixir-ls/release"))
+    (add-to-list 'exec-path "~/Desarrollo/utilities/elixir-ls/release"))
 
   (defvar lsp-elixir--config-options (make-hash-table))
 
   (add-hook 'lsp-after-initialize-hook
             (lambda ()
               (lsp--set-configuration `(:elixirLS, lsp-elixir--config-options))))
- 
+
   ;Ruby
   ;; Code folding
+
   (add-hook 'ruby-mode-hook
             (lambda () (hs-minor-mode)))
 
-  (eval-after-load "hideshow"
-    '(add-to-list 'hs-special-modes-alist
-                  `(ruby-mode
-                    ,(rx (or "def" "class" "module" "do" "{" "[")) ; Block start
-                    ,(rx (or "}" "]" "end"))                       ; Block end
-                    ,(rx (or "#" "=begin"))                        ; Comment start
-                    ruby-forward-sexp nil)))
+  ;; (eval-after-load "hideshow"
+  ;;   '(add-to-list 'hs-special-modes-alist
+  ;;                 `(ruby-mode
+  ;;                   ,(rx (or "def" "class" "module" "do" "{" "[")) ; Block start
+  ;;                   ,(rx (or "}" "]" "end"))                       ; Block end
+  ;;                   ,(rx (or "#" "=begin"))                        ; Comment start
+  ;;                   ruby-forward-sexp nil)))
 
-  (global-set-key (kbd "C-c h <left>") 'hs-hide-block)
-  (global-set-key (kbd "C-c h <right>") 'hs-show-block)
-  (global-set-key (kbd "C-c h <up>") 'hs-hide-level)
+  ;; (global-set-key (kbd "C-c h <left>") 'hs-hide-block)
+  ;; (global-set-key (kbd "C-c h <right>") 'hs-show-block)
+  ;; (global-set-key (kbd "C-c h <up>") 'hs-hide-level)
 
-  ;NEOTREE
-  (setq neo-window-width 35)
 
   ; ISPELL CONFIGURATION
   (add-hook 'markdown-mode-hook 'flyspell-mode) ;start flyspell-mode
@@ -437,11 +487,38 @@ you should place your code here."
    web-mode-code-indent-offset 2
    web-mode-attr-indent-offset 2)
 
+  ; Disable indent on new line for js2-mode
+  (add-hook 'rjsx-mode-hook (lambda () (electric-indent-local-mode -1)))
+
   (with-eval-after-load 'web-mode
     (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
     (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
     (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil)))
 
+ ; Ibuffer sidebar
+  (use-package ibuffer-sidebar
+    :load-path "~/.emacs.d/fork/ibuffer-sidebar"
+    :ensure nil
+    :commands (ibuffer-sidebar-toggle-sidebar)
+    :config
+    (setq ibuffer-sidebar-use-custom-font t)
+    (setq ibuffer-sidebar-display-alist '((side . right) (slot . 1)))
+    (setq ibuffer-sidebar-width 35)
+    )
+
+  (setq ibuffer-saved-filter-groups
+        (quote (("default"
+                   ("elixir" (mode . elixir-mode))
+                   ("ruby" (mode . enh-ruby-mode))
+                   ("jsx" (mode . jsx-mode))
+                   ("web" (mode . web-mode))
+                   ("emacs" (or
+                             (name . "^\\*scratch\\*$")
+                             (name . "^\\*Messages\\*$")))))))
+
+  (add-hook 'ibuffer-mode-hook
+            (lambda ()
+              (ibuffer-switch-to-saved-filter-groups "default")))
   ;; ; CTAGS regeneration
   ;; (setq projectile-tags-command "ctags -e -R *")
   ;; (setq tags-revert-without-query t)
@@ -461,7 +538,6 @@ you should place your code here."
   ;; ; Avoid spacemacs message every time CTAGS are regenerated
   ;; (setq spacemacs-large-file-modes-list '(tags-table-mode))
 
-
   ;SCROLLING
   (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time  
   (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling  
@@ -479,21 +555,7 @@ you should place your code here."
   (add-hook 'window-configuration-change-hook 'update-scroll-bars)
   (add-hook 'buffer-list-update-hook 'update-scroll-bars)
 
-  ;;GITHUB
-  ;; (require 'magit-gh-pulls)
-  ;; (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
 
-  ;; JT
-  (defun sync-prj (s)
-    "Sync current project with devcloud"
-    (interactive "sIntroduce project to sync: ")
-    (shell-command 'concat("~/Desarrollo/utilities/devcloud/script/sync -f " s))
-  )
-
-  (spacemacs/declare-prefix "oj" "jt-actions")
-  (spacemacs/declare-prefix "ojs" "sync")
-;;  (spacemacs/declare-prefix "ojsf" "sync farming")
-  (spacemacs/set-leader-keys "ojs" 'sync-prj)
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -535,7 +597,7 @@ This function is called at the very end of Spacemacs initialization."
     ("94ba29363bfb7e06105f68d72b268f85981f7fba2ddef89331660033101eb5e5" "3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "51e228ffd6c4fff9b5168b31d5927c27734e82ec61f414970fc6bcce23bc140d" "8288b9b453cdd2398339a9fd0cec94105bc5ca79b86695bd7bf0381b1fbe8147" default)))
  '(package-selected-packages
    (quote
-    (dap-mode bui enh-ruby-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv projectile-rails rake inflections minitest feature-mode chruby bundler inf-ruby exunit lsp-mode ws-butler winum volatile-highlights vi-tilde-fringe uuidgen toc-org spaceline powerline restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text lorem-ipsum linum-relative link-hint indent-guide lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation projectile request google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu goto-chg undo-tree eval-sexp-fu pkg-info epl dumb-jump f define-word column-enforce-mode clean-aindent-mode bind-key auto-highlight-symbol packed aggressive-indent adaptive-wrap ace-window ace-link helm avy helm-core async popup flymake jsonrpc eglot yaml-mode web-mode web-beautify tagedit smeargle slim-mode scss-mode sass-mode rainbow-mode pug-mode orgit omnisharp mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc helm-gitignore helm-css-scss helm-company helm-c-yasnippet haml-mode guru-mode gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip evil-magit magit transient git-commit with-editor emmet-mode diff-hl csharp-mode company-web web-completion-data company-tern dash-functional tern company-statistics coffee-mode auto-yasnippet yasnippet auto-dictionary all-the-icons memoize ac-ispell auto-complete dockerfile-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line eglot))))
+    (posframe dap-mode bui enh-ruby-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv projectile-rails rake inflections minitest feature-mode chruby bundler inf-ruby exunit lsp-mode ws-butler winum volatile-highlights vi-tilde-fringe uuidgen toc-org spaceline powerline restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text lorem-ipsum linum-relative link-hint indent-guide lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation projectile request google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu goto-chg undo-tree eval-sexp-fu pkg-info epl dumb-jump f define-word column-enforce-mode clean-aindent-mode bind-key auto-highlight-symbol packed aggressive-indent adaptive-wrap ace-window ace-link helm avy helm-core async popup flymake jsonrpc eglot yaml-mode web-mode web-beautify tagedit smeargle slim-mode scss-mode sass-mode rainbow-mode pug-mode orgit omnisharp mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc helm-gitignore helm-css-scss helm-company helm-c-yasnippet haml-mode guru-mode gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip evil-magit magit transient git-commit with-editor emmet-mode diff-hl csharp-mode company-web web-completion-data company-tern dash-functional tern company-statistics coffee-mode auto-yasnippet yasnippet auto-dictionary all-the-icons memoize ac-ispell auto-complete dockerfile-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line eglot))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
