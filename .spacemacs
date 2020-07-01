@@ -510,7 +510,7 @@ you should place your code here."
         (quote (("default"
                    ("elixir" (mode . elixir-mode))
                    ("ruby" (mode . enh-ruby-mode))
-                   ("jsx" (mode . jsx-mode))
+                   ("jsx" (mode . rjsx-mode))
                    ("web" (mode . web-mode))
                    ("emacs" (or
                              (name . "^\\*scratch\\*$")
