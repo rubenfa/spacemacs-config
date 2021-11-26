@@ -125,7 +125,7 @@ values."
    ;; List of items to show in the startup buffer. If nil it is disabled.
    ;; Possible values are: `recents' `bookmarks' `projects'.
    ;; (default '(recents projects))
-   dotspacemacs-startup-lists '(projects bookmarks recents)
+   dotspacemacs-startup-lists '((projects  . 10) (recents . 10) (bookmarks . 5))
    ;; Number of recent files to show in the startup buffer. Ignored if
    ;; `dotspacemacs-startup-lists' doesn't include `recents'. (default 5)
    dotspacemacs-startup-recent-list-size 10
@@ -647,11 +647,11 @@ This function is called at the very end of Spacemacs initialization."
  '(package-selected-packages
    '(js-format dap-mode bui enh-ruby-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv projectile-rails rake inflections minitest feature-mode chruby bundler inf-ruby exunit lsp-mode ws-butler winum volatile-highlights vi-tilde-fringe uuidgen toc-org spaceline powerline restart-emacs rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text lorem-ipsum linum-relative link-hint indent-guide lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation projectile request google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu goto-chg undo-tree eval-sexp-fu pkg-info epl dumb-jump f define-word column-enforce-mode clean-aindent-mode bind-key auto-highlight-symbol packed aggressive-indent adaptive-wrap ace-window ace-link helm avy helm-core async popup flymake jsonrpc eglot yaml-mode web-mode web-beautify tagedit smeargle slim-mode scss-mode sass-mode rainbow-mode pug-mode orgit omnisharp mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc helm-gitignore helm-css-scss helm-company helm-c-yasnippet haml-mode guru-mode gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip evil-magit magit transient git-commit with-editor emmet-mode diff-hl csharp-mode company-web web-completion-data company-tern dash-functional tern company-statistics coffee-mode auto-yasnippet yasnippet auto-dictionary all-the-icons memoize ac-ispell auto-complete dockerfile-mode ob-elixir org-plus-contrib flycheck-mix flycheck-credo flycheck alchemist s company dash elixir-mode which-key use-package macrostep hydra helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag evil elisp-slime-nav diminish bind-map auto-compile ace-jump-helm-line eglot)))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  '(default ((((class color) (min-colors 89)) ())))
-  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
-  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((((class color) (min-colors 89)) ())))
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 )
