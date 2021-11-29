@@ -67,6 +67,7 @@ values."
      (treemacs :variables treemacs-use-scope-type 'Frames)
      tmux
      themes-megapack
+     (unicode-fonts :variables unicode-fonts-ligature-modes '(js-mode elixir-mode ruby-mode))
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -150,9 +151,9 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("MonoLisa:medium"
+   dotspacemacs-default-font '("Cascadia Code:regular"
                                :size 16
-                               :weight medium
+                               :weight normal
                                :width normal
                                :powerline-scale 1.1)
    ;; The leader key
@@ -343,7 +344,7 @@ you should place your code here."
 
   (guru-global-mode t) ; disables arrow keys to be more emacs pro
 
-  ; TREEMACS
+  ;TREEMACS
   (use-package treemacs
   :ensure t
   :defer t
