@@ -39,14 +39,13 @@ values."
      yaml
      javascript
      html
-     tabs
+     ;tabs
      react
      auto-completion
      bm
      ;; better-defaults
      emacs-lisp
      git
-     github
      ibuffer
        (ibuffer :variables ibuffer-group-buffers-by nil)
      markdown
@@ -136,6 +135,7 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(
+             solarized-zenburn
              oldlace
              smyx
              chocolate
@@ -302,8 +302,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; Para prevenir el bug que hace que Spacemacs copie texto aleatorio al abrir un archivo con el mouse
   (add-hook 'spacemacs-buffer-mode-hook (lambda ()
                                           (set (make-local-variable 'mouse-1-click-follows-link) nil)))
+;;  (setq fci-rule-column '100)
 
-
+  (setq-default fill-column 100)
   )
 
 (defun dotspacemacs/user-config ()
@@ -343,6 +344,10 @@ you should place your code here."
   (spacemacs/set-leader-keys "oi" 'ibuffer-sidebar-show-sidebar)
 
   (guru-global-mode t) ; disables arrow keys to be more emacs pro
+
+  ; SHOW RULE IN COLUMN 100 in every prog mode
+  (setq-default fill-column 100)
+  (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
   ;TREEMACS
   (use-package treemacs
@@ -567,24 +572,24 @@ you should place your code here."
   (setq scroll-step 1) ;; keyboard scroll one line at a time
 
   ;Tabs layer
-  (centaur-tabs-headline-match)
-  (setq centaur-tabs-height 32)
-  (setq centaur-tabs-set-modified-marker t)
-  (setq centaur-tabs-modified-marker "*")
-  (setq centaur-tabs-set-icons t)
-  (setq centaur-tabs-gray-out-icons 'buffer)
-  (add-hook 'dired-mode-hook 'centaur-tabs-local-mode)
-  (setq centaur-tabs-style "bar")
-  (setq centaur-tabs-set-bar 'under)
-  ;; Note: If you're not using Spacmeacs, in order for the underline to display
-  ;; correctly you must add the following line:
-  (setq x-underline-at-descent-line t)
-  (global-set-key (kbd "C-<left>") 'centaur-tabs-backward)
-  (global-set-key (kbd "C-S-<left>") 'centaur-tabs-backward-group)
-  (global-set-key (kbd "C-<right>") 'centaur-tabs-forward)
-  (global-set-key (kbd "C-S-<right>") 'centaur-tabs-forward-group)
-  (global-set-key (kbd "C-M-[") 'centaur-tabs-move-current-tab-to-left)
-  (global-set-key (kbd "C-M-]") 'centaur-tabs-move-current-tab-to-right)
+  ;; (centaur-tabs-headline-match)
+  ;; (setq centaur-tabs-height 32)
+  ;; (setq centaur-tabs-set-modified-marker t)
+  ;; (setq centaur-tabs-modified-marker "*")
+  ;; (setq centaur-tabs-set-icons t)
+  ;; (setq centaur-tabs-gray-out-icons 'buffer)
+  ;; (add-hook 'dired-mode-hook 'centaur-tabs-local-mode)
+  ;; (setq centaur-tabs-style "bar")
+  ;; (setq centaur-tabs-set-bar 'under)
+  ;; ;; Note: If you're not using Spacmeacs, in order for the underline to display
+  ;; ;; correctly you must add the following line:
+  ;; (setq x-underline-at-descent-line t)
+  ;; (global-set-key (kbd "C-<left>") 'centaur-tabs-backward)
+  ;; (global-set-key (kbd "C-S-<left>") 'centaur-tabs-backward-group)
+  ;; (global-set-key (kbd "C-<right>") 'centaur-tabs-forward)
+  ;; (global-set-key (kbd "C-S-<right>") 'centaur-tabs-forward-group)
+  ;; (global-set-key (kbd "C-M-[") 'centaur-tabs-move-current-tab-to-left)
+  ;; (global-set-key (kbd "C-M-]") 'centaur-tabs-move-current-tab-to-right)
 
 
   ;; restore on load (even before you require bm)
@@ -642,7 +647,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("e0628ee6c594bc7a29bedc5c57f0f56f28c5b5deaa1bc60fc8bd4bb4106ebfda" "57a29645c35ae5ce1660d5987d3da5869b048477a7801ce7ab57bfb25ce12d3e" "94ba29363bfb7e06105f68d72b268f85981f7fba2ddef89331660033101eb5e5" "3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "51e228ffd6c4fff9b5168b31d5927c27734e82ec61f414970fc6bcce23bc140d" "8288b9b453cdd2398339a9fd0cec94105bc5ca79b86695bd7bf0381b1fbe8147" default))
+   '("51ec7bfa54adf5fff5d466248ea6431097f5a18224788d0bd7eb1257a4f7b773" "33ea268218b70aa106ba51a85fe976bfae9cf6931b18ceaf57159c558bbcd1e6" "333958c446e920f5c350c4b4016908c130c3b46d590af91e1e7e2a0611f1e8c5" "e894fb72e78ad388a070072a0003c837867eb2ce14d78d2611a302d925702af9" "f04122bbc305a202967fa1838e20ff741455307c2ae80a26035fbf5d637e325f" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "a37d20710ab581792b7c9f8a075fcbb775d4ffa6c8bce9137c84951b1b453016" "e0628ee6c594bc7a29bedc5c57f0f56f28c5b5deaa1bc60fc8bd4bb4106ebfda" "57a29645c35ae5ce1660d5987d3da5869b048477a7801ce7ab57bfb25ce12d3e" "94ba29363bfb7e06105f68d72b268f85981f7fba2ddef89331660033101eb5e5" "3cd28471e80be3bd2657ca3f03fbb2884ab669662271794360866ab60b6cb6e6" "51e228ffd6c4fff9b5168b31d5927c27734e82ec61f414970fc6bcce23bc140d" "8288b9b453cdd2398339a9fd0cec94105bc5ca79b86695bd7bf0381b1fbe8147" default))
  '(evil-want-Y-yank-to-eol t)
  '(helm-completion-style 'helm)
  '(package-selected-packages
@@ -652,7 +657,8 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((((class color) (min-colors 89)) ())))
+ '(default ((((class color) (min-colors 89)) (:foreground "#F7F7F7" :background "#282828"))))
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 )
+
