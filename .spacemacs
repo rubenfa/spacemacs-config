@@ -79,6 +79,10 @@ values."
                                       exunit
                                       ;; neotree
                                       ibuffer-sidebar
+                                      (copilot :location (recipe
+                                                            :fetcher github
+                                                            :repo "zerolfx/copilot.el"
+                                                            :files ("*.el" "dist")))
                                      )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '(alchemist)
@@ -152,7 +156,7 @@ values."
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
    dotspacemacs-default-font '("Cascadia Code:regular"
-                               :size 16
+                               :size 20
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -609,7 +613,21 @@ you should place your code here."
   ; SHOW FULL PATH OF OPEN BUFFER ON MODE-LINE
   (with-eval-after-load 'spaceline-config (spaceline-define-segment buffer-id (if (buffer-file-name) (abbreviate-file-name (buffer-file-name)) (powerline-buffer-id))))
 
+  ; COPILOT
 
+  ;; accept completion from copilot and fallback to company
+
+  (with-eval-after-load 'company
+    ;; disable inline previews
+    (delq 'company-preview-if-just-one-frontend company-frontends))
+  
+  (with-eval-after-load 'copilot
+    (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+    (define-key copilot-completion-map (kbd "C-TAB") 'copilot-accept-completion-by-word)
+    (define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word))
+
+  (add-hook 'prog-mode-hook 'copilot-mode)
 
 )
 
@@ -661,4 +679,3 @@ This function is called at the very end of Spacemacs initialization."
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 )
-
